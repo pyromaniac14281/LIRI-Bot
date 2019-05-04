@@ -1,0 +1,24 @@
+{
+  "name": "liribot-node-app",
+  "version": "0.1.0",
+  "description": "LIRI is a Language Interpretation and Recognition Interface.",
+  "main": "liri.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pyromaniac14281/LIRI-Bot"
+  },
+  "author": "Vinesh Pendyala",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pyromaniac14281/LIRI-Bot/issues"
+  },
+  "homepage": "https://github.com/pyromaniac14281/LIRI-Bot#readme",
+  "dependencies": {
+    "request": "^2.79.0",
+    "spotify": "^0.3.0",
+    "twitter": "^1.7.0"
+  }
+}
