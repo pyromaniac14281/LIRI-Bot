@@ -57,7 +57,7 @@ var GetMeSpotify = function(songName) {
 }
 
 var GetMeMovie = function(movieName) {
-	request('http://www.omdbapi.com/?t=' + movieName + '&y=&plot=short&r=json', function (error, response, body){
+	request('http://www.omdbapi.com/?i=tt3896198&apikey=2d05e865' + movieName + '&y=&plot=short&r=json', function (error, response, body){
 		if(!error && response.statusCode == 200) {
 			
 			var jsonData = JSON.parse(body); 
