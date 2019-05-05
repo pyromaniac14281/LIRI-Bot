@@ -1,172 +1,117 @@
+var keysReference = require('./keys.js');
+var nodeArg = process.argv;
+var inputA = nodeArg[2];
+var inputB = "";
 var Twitter = require('twitter');
 var spotify = require('spotify');
 var request = require('request');
-var fs = require('fs');
-var keys = require("./keys.js");
-var tweetsArray = [];
-var inputCommand = process.argv[2];
-var commandParam = process.argv[3];
-var defaultMovie = "Ex Machina";
-var defaultSong = "Radioactive";
+var fs = require("fs");
 
-
-
-var twitterKeys = keys.twitterKeys;
-var tmdbKey = keys.tmdbKey;
-
-var client = new Twitter({
-  consumer_key: twitterKeys.consumer_key,
-  consumer_secret: twitterKeys.consumer_secret,
-  access_token_key: twitterKeys.access_token_key,
-  access_token_secret: twitterKeys.access_token_secret
-});
-
-
-
-
-function processCommands(command, commandParam){
-
-
-	switch(command){
-
-	case 'my-tweets':
-		getMyTweets(); break;
-	case 'spotify-this-song':
-		if(commandParam === undefined){
-			commandParam = defaultSong;
-		}     
-		spotifyThis(commandParam); break;
-	case 'movie-this':
-		if(commandParam === undefined){
-			commandParam = defaultMovie;
-		}    
-		movieThis(commandParam); break;
-	case 'do-what-it-says':
-		doWhatItSays(); break;
-	default: 
-		console.log("Invalid command. Please type any of the following commnds: my-tweets spotify-this-song movie-this or do-what-it-says");
+for (var i = 3; i < process.argv.length; i++){
+  inputB = inputB + " " + process.argv[i];
 }
 
 
-}
 
-function getMyTweets(){
 
-	var params = {screen_name: 'jincygeorge8388', count: 20, exclude_replies:true, trim_user:true};
-		client.get('statuses/user_timeline', params, function(error, tweets, response) {
-				if (!error) {
-					//console.log(tweets);
-					tweetsArray = tweets;
-
-					for(i=0; i<tweetsArray.length; i++){
-						console.log("Created at: " + tweetsArray[i].created_at);
-						console.log("Text: " + tweetsArray[i].text);
-						console.log('--------------------------------------');
-					}
-				}
-				else{
-					console.log(error);
-				}
+var GetMyTweets = function() {
+	var client = new Twitter({
+	 	consumer_key : keysReference.twitterKeys.consumer_key,
+	 	consumer_secret : keysReference.twitterKeys.consumer_secret,
+	 	access_token_key : keysReference.twitterKeys.access_token_key,
+		access_token_secret : keysReference.twitterKeys.access_token_secret
 	});
 
+	if (inputA == "my-tweets") {
+	   var params = {screen_name: 'PendyalaVinesh'};
+	    }
+	    client.get('statuses/user_timeline', params, function(error, tweets, response) {
+	      if (!error) {
+	        for (var i = 0; i < 20; i++) { 
+	        console.log("Tweet: " + tweets[i].text + "\n" + "Created: " + tweets[i].created_at + "\n"); 
+	        }
+	      };
+	    });
 }
 
-function spotifyThis(song){
+var GetArtistNames = function(artist) {
+	return artist.name;
+}
+var GetMeSpotify = function(songName) {
+//spotify.search({ type: 'track', query: 'dancing in the moonlight' }, function(err, data) {
+  spotify.search({ type: 'track', query: songName }, function(err, data) {
 
-	if(song === ""){
-		song = "Radioactive";
-	}
-
-	spotify.search({ type: 'track', query: song}, function(err, data) {
-    if (err) {
+    if ( err ) {
         console.log('Error occurred: ' + err);
         return;
     }
-
-    var song = data.tracks.items[0];
-    console.log("------Artists-----");
-    for(i=0; i<song.artists.length; i++){
-    	console.log(song.artists[i].name);
-    }
-
-    console.log("------Song Name-----");
-    console.log(song.name);
-
-	console.log("-------Preview Link-----");
-    console.log(song.preview_url);
-
-    console.log("-------Album-----");
-    console.log(song.album.name);
-
-	});
-
+ 	var songs = data.tracks.items;
+ 	for(var i = 0; i < songs.length; i++) {
+ 		console.log(i);
+ 		console.log('artist(s): ' + songs[i].artists.map(GetArtistNames));
+ 		console.log('song name: ' + songs[i].name);
+ 		console.log('previews song: ' + songs[i].preview_url); 
+ 		console.log('-------------------------------------------');
+ 	}
+});
 }
 
-function movieThis(movieName){
+var GetMeMovie = function(movieName) {
+	request('http://www.omdbapi.com/?t=' + movieName + '&y=&plot=short&r=json', function (error, response, body){
+		if(!error && response.statusCode == 200) {
+			
+			var jsonData = JSON.parse(body); 
 
-	console.log(movieName);
-
-	request("https://api.themoviedb.org/3/search/movie?api_key=" + tmdbKey + "&query=" + movieName, function(error, response, body) {
-
-  	if (!error && response.statusCode === 200) {
-
-	    
-	    var movieID =  JSON.parse(body).results[0].id;
-
-	    var queryURL = "https://api.themoviedb.org/3/movie/" + movieID + "?api_key=" + tmdbKey + "&append_to_response=credits,releases";
-
-	    request(queryURL, function(error, response, body) {
-	    	var movieObj = JSON.parse(body);
-
-	    	console.log("--------Title-----------");
-	    	console.log(movieObj.original_title);
-
-	    	console.log("--------Year -----------");
-	    	console.log(movieObj.release_date.substring(0,4));
-
-	   		console.log("--------Rating-----------");
-	   		console.log(movieObj.releases.countries[0].certification);
-
-	   		console.log("--------Country Produced-----------");
-	   		for(i=0, j = movieObj.production_countries.length; i<j; i++){
-	   			console.log(movieObj.production_countries[i].name);
-	   		}
-	   		console.log("--------Languages-----------");
-	   		for(i=0, j = movieObj.spoken_languages.length; i<j; i++){
-	   			console.log(movieObj.spoken_languages[i].name);
-	   		}
-	   		console.log("--------Plot----------------");
-	   		console.log(movieObj.overview);
-
-	   		console.log("--------Actors-----------");
-	   		for(i=0, j = movieObj.credits.cast.length; i<j; i++){
-	   			console.log(movieObj.credits.cast[i].name);
-	   		}
-	    	
-	    });
-
-
-  	}else{
-  		console.log(error);
-  	}
-
-	});
-}
-
-function doWhatItSays(){
-	fs.readFile('random.txt', 'utf8', function(err, data){
-
-		if (err){ 
-			return console.log(err);
+			console.log('Title: ' + jsonData.Title);
+			console.log('Year: ' + jsonData.Year);
+			console.log('Rated: ' + jsonData.Rated);
+			console.log('IMDB Rating: ' + jsonData.imdbRating);
+			console.log('Country: ' + jsonData.Country);
+			console.log('Language: ' + jsonData.Language);
+			console.log('Plot: ' + jsonData.Plot);
+			console.log('Actors: ' + jsonData.Actors);
+			console.log('Rotten tomatoes rating: ' + jsonData.tomatoRating);
+			console.log('Rotten tomatoes rating: ' + jsonData.tomatoURL);
 		}
+	});
+}
+
+var doWhatItSays = function(){
+	fs.readFile('random.txt', 'utf8', function(err, data){
+		if (err) throw err;
 
 		var dataArr = data.split(',');
 
-		processCommands(dataArr[0], dataArr[1]);
+		if(dataArr.length == 2) {
+			pick(dataArr[0], dataArr[1]);
+		} else if (dataArr.length == 1) {
+			pick(dataArr[0]);
+		}
 	});
 }
 
 
+var pick = function(caseData, functionData) {
+	switch(caseData) {
+		case 'my-tweets' :
+			GetMyTweets();
+			break;
+		case 'spotify-this-song': 
+			GetMeSpotify(functionData);
+			break;
+		case 'movie-this':
+			GetMeMovie(functionData);
+			break;
+		case 'do-what-it-says':
+			doWhatItSays();
+			break;
+		default:
+		console.log('LIRI does not know that');
+	}
+}
 
+var runThis = function(argOne, argTwo) {
+	pick(argOne, argTwo);
+};
 
-processCommands(inputCommand, commandParam);
+runThis(process.argv[2], process.argv[3]);
