@@ -1,50 +1,47 @@
-# LIRI-Bot
-LIRI is a Language Interpretation and Recognition Interface. LIRI will be a command line node app that takes in parameters and gives you back data.
-LIRI uses the following commands:
-* `my-tweets`
+# Week 10 Homework Assignment (LIRI Bot)
 
-* `spotify-this-song`
+### LIRI - Overview
 
-* `movie-this`
+LIRI like iPhone's SIRI. Stands for **Language Interpretation and Recognition Interface**. LIRI is a command line node app that takes in parameters and gives you back data. Using the following node packages:
 
-* `do-what-it-says`
+   * [Twitter](https://www.npmjs.com/package/twitter)
+   * [Spotify](https://www.npmjs.com/package/spotify)
+   * [Request](https://www.npmjs.com/package/request)
 
-Technologies used:
-* Node.js
-* Javascript
-* npm packages: require, twitter, spotify
+### Twitter
 
-How to Run LIRI-Bot
+Hard coded in, when typing in the command:
 
-1: node liri.js my-tweets
-This will show your last 20 tweets and when they were created at in your terminal/bash window.
+ * `my-tweets`
 
-2: node liri.js spotify-this-song `<song name here>`
- This will show the following information about the song in your terminal/bash window
-    * Artist(s)
-    * The song's name
-    * A preview link of the song from Spotify
-    * The album that the song is from
+Will present the latest 20 tweets along with the date stamp showing the time and day created by myself, @carltonhurdle. 
 
- * if no song is provided then the program will default to
-    * "The Sign" by Ace of Base
+### Spotify
 
-3: node liri.js movie-this `<movie name here>`
-* This will output the following information to your terminal/bash window:
+When typing in the command:
 
-    * Title of the movie.
-    * Year the movie came out.
-    * IMDB Rating of the movie.
-    * Country where the movie was produced.
-    * Language of the movie.
-    * Plot of the movie.
-    * Actors in the movie.
-    * Rotten Tomatoes Rating.
-    * Rotten Tomatoes URL.
+ * `spotify-this-song <name of song>`
 
-* If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+Will present information about that song, including album, artist and song name. 
 
-   
-4: node liri.js do-what-it-says
+### OMDB
 
-This will output the command placed in random.txt file
+When typing in the command:
+
+* `node liri.js movie-this '<movie name here>'`
+
+   * Will output the following information to your terminal/bash window:
+
+     ```
+       * Title of the movie.
+       * Year the movie came out.
+       * IMDB Rating of the movie.
+       * Country where the movie was produced.
+       * Language of the movie.
+       * Plot of the movie.
+       * Actors in the movie.
+       * Rotten Tomatoes Rating.
+       * Rotten Tomatoes URL.
+     ```
+
+**Enjoy!**
